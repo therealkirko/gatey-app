@@ -51,6 +51,5 @@ class SigninController extends GetxController with BaseController {
 
   void storeToken(token) async {
     await storage.write(key: "token", value: token);
-    print('Token stored');
   }
 }

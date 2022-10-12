@@ -1,9 +1,13 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+import 'package:gatey/src/controllers/visits_controller.dart';
 import 'package:gatey/src/theme/index.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class CreateVisitScreen extends StatelessWidget {
-  const CreateVisitScreen({Key? key}) : super(key: key);
+  CreateVisitScreen({Key? key}) : super(key: key);
+  final VisitController _controller = Get.put(VisitController());
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -24,73 +28,113 @@ class CreateVisitScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.fromLTRB(16, 2, 16, 2),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const TextField(
-                decoration: InputDecoration(
-                  labelText: 'National Id',
-                  labelStyle: TextStyle(
-                    color: textColor,
-                    fontSize: 18
-                  ),
-                ),
-              ),
-              const SizedBox(height: 10),
-              const TextField(
-                decoration: InputDecoration(
-                  labelText: 'Full name',
-                  labelStyle: TextStyle(
-                    color: textColor,
-                    fontSize: 18
-                  ),
-                ),
-              ),
-              const SizedBox(height: 10),
-              const TextField(
-                decoration: InputDecoration(
-                  labelText: 'Phone number',
-                  labelStyle: TextStyle(
-                    color: textColor,
-                    fontSize: 18
-                  ),
-                ),
-              ),
-              const SizedBox(height: 10),
-              const TextField(
-                decoration: InputDecoration(
-                  labelText: 'Office',
-                  labelStyle: TextStyle(
-                    color: textColor,
-                    fontSize: 18
-                  ),
-                ),
-              ),
-              const SizedBox(height: 10),
-              SizedBox(
-                height: 45,
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    elevation: 0,
-                    primary: mainColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  child: const Text(
-                    'Continue',
-                    style: TextStyle(
+          child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                TextFormField(
+                  controller: _controller.nationalIdController,
+                  validator: (value) {
+                    if(value!.isEmpty) {
+                      return "Please provide a valid visitor's national ID";
+                    }
+                    return null;
+                  },
+                  decoration: const InputDecoration(
+                    labelText: 'National Id',
+                    labelStyle: TextStyle(
                       color: textColor,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold
+                      fontSize: 18
                     ),
                   ),
                 ),
-              ),
-            ],
+                const SizedBox(height: 10),
+                TextFormField(
+                  controller: _controller.nameController,
+                  validator: (value) {
+                    if(value!.isEmpty) {
+                      return "Please provide the visitor's name";
+                    }
+                    return null;
+                  },
+                  decoration: const InputDecoration(
+                    labelText: 'Full name',
+                    labelStyle: TextStyle(
+                      color: textColor,
+                      fontSize: 18
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                TextFormField(
+                  controller: _controller.phoneController,
+                  validator: (value) {
+                    if(value!.isEmpty) {
+                      return "Please provide the visitor's phone number";
+                    }
+                    return null;
+                  },
+                  decoration: const InputDecoration(
+                    labelText: 'Phone number',
+                    labelStyle: TextStyle(
+                      color: textColor,
+                      fontSize: 18
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                TextFormField(
+                  controller: _controller.destinationController,
+                  validator: (value) {
+                    if(value!.isEmpty) {
+                      return "Please provide the visitor's destination office";
+                    }
+                    return null;
+                  },
+                  decoration: const InputDecoration(
+                    labelText: 'Office',
+                    labelStyle: TextStyle(
+                      color: textColor,
+                      fontSize: 18
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Obx(() => SizedBox(
+                  height: 45,
+                  width: double.infinity,
+                  child: (_controller.isLoading.isTrue)
+                  ? const Center(
+                      child: CircularProgressIndicator.adaptive(
+                        strokeWidth: 4,
+                      ),
+                    )
+                  : ElevatedButton(
+                      onPressed: () {
+                        if(_formKey.currentState!.validate()) {
+                          _controller.request();
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        primary: mainColor,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12)
+                        ),
+                      ),
+                      child: const Text(
+                        'Continue',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold
+                        ),
+                      ),
+                    )
+                )),
+              ],
+            ),
           ),
         ),
       ),

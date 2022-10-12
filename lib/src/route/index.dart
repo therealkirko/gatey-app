@@ -7,16 +7,16 @@ class RouteGenerator {
     switch(settings.name) {
       case '/':
         return MaterialPageRoute(builder: (_) => LoginScreen());
-      case '/dashobard':
+      case '/dashboard':
          return MaterialPageRoute(builder: (_) => HomeScreen());
       default:
         return MaterialPageRoute(builder: (context) => const Scaffold(
-            body: SizedBox(
-              child: Center(
-                child: Text('Default Page'),
-              ),
+          body: SizedBox(
+            child: Center(
+              child: Text('Default Page'),
             ),
-          ));
+          ),
+        ));
     }
   }
 }

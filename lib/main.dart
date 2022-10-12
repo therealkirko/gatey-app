@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:gatey/src/pages/login/index.dart';
 import 'package:gatey/src/route/index.dart';
 import 'package:get/get.dart';
@@ -6,8 +7,10 @@ import 'package:get/get.dart';
 import 'src/theme/index.dart';
 
 String? token;
+final _storage = FlutterSecureStorage();
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
+  token = await _storage.read(key: "token");
   runApp(const MyApp());
 }
 
