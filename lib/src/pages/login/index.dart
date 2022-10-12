@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:gatey/src/controllers/login_controller.dart';
 import 'package:gatey/src/pages/home/index.dart';
 import 'package:gatey/src/theme/index.dart';
+import 'package:get/get.dart';
 
 class LoginScreen extends StatelessWidget {
-  const LoginScreen({ Key? key }) : super(key: key);
+  LoginScreen({ Key? key }) : super(key: key);
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final SigninController _controller = Get.put(SigninController());
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +16,8 @@ class LoginScreen extends StatelessWidget {
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Center(
+          child: Form(
+            key: _formKey,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -26,8 +31,15 @@ class LoginScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 20),
-                const TextField(
-                  decoration: InputDecoration(
+                TextFormField(
+                  controller: _controller.emailController,
+                  validator: (value) {
+                    if(value!.isEmpty || !value.isEmail || !value.contains('@')) {
+                      return 'Please provide a valid email address';
+                    }
+                    return null;
+                  },
+                  decoration: const InputDecoration(
                     labelText: 'Email',
                     labelStyle: TextStyle(
                       color: textColor,
@@ -36,8 +48,15 @@ class LoginScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 10),
-                const TextField(
-                  decoration: InputDecoration(
+                TextFormField(
+                  controller: _controller.passwordController,
+                  validator: (value) {
+                    if(value!.isEmpty) {
+                      return 'Please provide a valid email address';
+                    }
+                    return null;
+                  },
+                  decoration: const InputDecoration(
                     labelText: 'Password',
                     labelStyle: TextStyle(
                       color: textColor,
@@ -50,33 +69,37 @@ class LoginScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 30),
-                SizedBox(
+                Obx(() => SizedBox(
                   height: 45,
                   width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const HomeScreen()
-                      )
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      elevation: 0,
-                      primary: mainColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+                  child: (_controller.isLoading.isTrue)
+                  ? const Center(
+                      child: CircularProgressIndicator.adaptive(
+                        strokeWidth: 4,
                       ),
-                    ),
-                    child: const Text(
-                      ' Sign In',
-                      style: TextStyle(
-                        color: textColor,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold
+                    )
+                  : ElevatedButton(
+                      onPressed: () {
+                        if(_formKey.currentState!.validate()) {
+                          _controller.request();
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        primary: mainColor,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12)
+                        ),
                       ),
-                    ),
-                  ),
-                ),
+                      child: const Text(
+                        'SIGN IN',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold
+                        ),
+                      ),
+                    )
+                )),
               ],
             ),
           ),

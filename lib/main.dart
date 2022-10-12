@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:gatey/src/pages/login/index.dart';
+import 'package:gatey/src/route/index.dart';
 import 'package:get/get.dart';
 
 import 'src/theme/index.dart';
 
-void main() {
+String? token;
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 
@@ -22,7 +25,8 @@ class MyApp extends StatelessWidget {
         focusColor: mainColor,
         hoverColor: mainColor
       ),
-      home: LoginScreen(),
+      initialRoute: token == null ? '/' : '/dashboard',
+      onGenerateRoute: RouteGenerator.generateRoute,
     );
   }
 }
