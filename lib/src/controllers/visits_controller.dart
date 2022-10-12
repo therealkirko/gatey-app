@@ -37,9 +37,17 @@ class VisitController extends GetxController with BaseController {
     var destination = destinationController.text;
 
     await VisitService().CreateVisit(nationalId, name, phone, destination).then((value) {
+      clearText();
       DialogHelper.showSuccessDialog(message: "You have successfully Logged in.");
     }).catchError((error) {
       handleError(error);
     }).whenComplete(() => isLoading(false));
+  }
+
+  void clearText() {
+    nationalIdController.clear();
+    nameController.clear();
+    phoneController.clear();
+    destinationController.clear();
   }
 }
